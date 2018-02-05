@@ -1,2 +1,2 @@
 # macro-light
-RGGW lighting ring for macro photography
+RGBW lighting ring for macro photography
