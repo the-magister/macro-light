@@ -39,11 +39,9 @@ byte neopix_gamma[] = {
 
 void getEEPROM() {
   EEPROM.get(0, settings);
-  showSettings();
 }
 void setEEPROM() {
   EEPROM.put(0, settings);
-  showSettings();
 }
 
 void showSettings() {
@@ -62,11 +60,15 @@ void showSettings() {
   ); 
   
   Serial << "r:" << settings.red;
-  Serial << "g:" << settings.green;
-  Serial << "b:" << settings.blue;
-  Serial << "w:" << settings.white;
-  Serial << "B:" << settings.bright;
+  Serial << " g:" << settings.green;
+  Serial << " b:" << settings.blue;
+  Serial << " w:" << settings.white;
+  Serial << " B:" << settings.bright;
   Serial << endl;
+
+  strip.show();
+
+  setEEPROM();
 }
 
 void setup() {
@@ -74,16 +76,17 @@ void setup() {
   
   strip.begin();
   getEEPROM();
+  showSettings();
 }
 
 void loop() {
 
   if( Serial.available() ) {
-    delay(20); // wait for the rest
+    delay(100); // wait for the rest
     
     // have some commands
-    char key = Serial.read(); // must be 'r','g','b','w','b'
-    byte val = Serial.parseInt();
+    char key = (char)Serial.read(); // must be 'r','g','b','w','b'
+    byte val = (byte)Serial.parseInt();
     switch( key ) {
       case 'r': settings.red = val; showSettings(); break;
       case 'g': settings.green = val; showSettings(); break;
@@ -93,9 +96,7 @@ void loop() {
       default:
         Serial << "Unknown command.  Try r,g,b,w,B followed by a byte.  E.g: r128" << endl;
     }
-    
   }
-  strip.show();
 }
 
 // Fill the dots one after the other with a color
